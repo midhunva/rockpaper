@@ -1,84 +1,69 @@
-//this function get a random choice for cuomputer
-//using math.random()f function
+const player = document.querySelector("#player");
+const computer = document.querySelector("#computer");
+const score = document.querySelector("#score");
+const  result = document.querySelector("#result");
+
+const btns = document.querySelectorAll("button");
+
+
+//--------------------------------------------------------------------------
 
 function getComputerChoice(){
-
-    const comChoices= ((Math.random())*10).toFixed(0);
-
-        if (comChoices <= 3){
-        return("ROCK");
-        }else if (comChoices >3 && comChoices <=6){
-        return("PAPER");
-        }else {
-        return("SCISSOR");
-        }
+    let comChoice = ["ROCK" , "PAPER" ,"SCISSOR"];
+    let randomNum = Math.floor(Math.random() * comChoice.length);
+    return comChoice[randomNum];
 }
+//-------------------------------------------------------------------------
+    let playerScore =0;
+    let computerScore =0;
 
-const win = "WON";
-const lost = "LOST";
-const tie = "TIE";
+function playround(playerSelection,computerSelection){
 
-//this function calls computer choice and your choice
-
-function playRound(playerSelection, computerSelection) {
-    
-    if (playerSelection ==="ROCK" && computerSelection==="ROCK"){
-        return(tie);
-    }else if(playerSelection==="ROCK" && computerSelection==="PAPER"){
-        return(lost);
-    }else if(playerSelection==="ROCK" && computerSelection==="SCISSOR") {
-        return(win);
-    }
-    else if (playerSelection==="PAPER" && computerSelection==="ROCK"){
-        return(win)
-    }else if(playerSelection==="PAPER" && computerSelection==="PAPER"){
-        return(tie)
-    }else if(playerSelection==="PAPER" && computerSelection==="SCISSOR"){
-        return(lost)
-    }
-    else if(playerSelection==="SCISSOR" && computerSelection==="ROCK"){
-    return(lost)
-    }else if(playerSelection==="SCISSOR" && computerSelection==="PAPER"){
-        return(win)
-    }else if(playerSelection==="SCISSOR" && computerSelection==="SCISSOR"){
-        return(tie)}
-
-        else{
-            return("WRONG ENTRY, ENTER CORRECT OPTION")
+    if(playerSelection===computerSelection){
+        result.textContent = "Its a draw";
+    }else if(
+        (playerSelection==="ROCK" && computerSelection==="SCISSOR") ||
+        (playerSelection==="PAPER" && computerSelection==="ROCK") ||
+        (playerSelection==="SCISSOR" && computerSelection==="PAPER")
+    ){result.textContent="You Win";
+        playerScore++;
+        }else{
+            result.textContent = "Computer Wins";
+            computerScore++;
         }
-    
-}
+    score.textContent = `YOU :${playerScore} | COMPUTER :${computerScore}` ;
 
-let numYouWon = 0;
-let numYouLost = 0;
+    
+    if (playerScore>=5){
+        result.textContent ="Final Result = Player wins" ;
+        setTimeout(()=>{
+            location.reload();
+            btns.disabled = true;
+        },9500);
+    }else if(computerScore>=5){
+        result.textContent = "Final Result :Computer Wins"
+        setTimeout(()=>{
+            location.reload();
+            btns.disabled = true;
+        },9500)
+    }
+    
+    //return `${playerSelection} | ${result.textContent} | ${playerScore} - ${computerScore}`
+}
+//-----------------------------------------------------------------------------------
 
 function game(){
-    for(i = 1 ; i<=5 ; i++){
-        let playerSelection = prompt("ROCK PAPER SCISSOR").toUpperCase();
-        let computerSelection = getComputerChoice();
+    btns.forEach((button) =>{
+        button.addEventListener("click", (e) =>{
+            const playerSelection = e.target.id 
+            const computerSelection = getComputerChoice();
 
-        console.log(`YOU : ${playerSelection}`)
-        console.log(`COMPUTER : ${computerSelection}`)
-
-        console.log(playRound(playerSelection, computerSelection));
-
-        if(playRound(playerSelection,computerSelection)==="WON"){
-            numYouWon++;
-        }else if (playRound(playerSelection,computerSelection)==="LOST"){
-            numYouLost++;
-        }
-    }
-
-       if (numYouWon > numYouLost){
-            console.log(`YOU WON ; you = ${numYouWon} computer = ${numYouLost}`)
-        }else if (numYouWon<numYouLost){
-            console.log(`COMPUTER WON; you = ${numYouWon} computer = ${numYouLost}`)
-        }else if(numYouLost ==numYouWon){
-        console.log(`It's a tie; you = ${numYouWon} computer = ${numYouLost}`)
-        } 
-      
-    }
+            player.textContent =   playerSelection ;
+            computer.textContent = computerSelection ;
+            playround(playerSelection,computerSelection)
+        });
+    });
+}
 game();
 
-
-
+//-----------------------------------------------------------------------------------------
